@@ -22,6 +22,7 @@ I have written scripts for each request in such a way that they can be chosen to
 **Download my test folder firstly**
 1. Navigate to my Git repo https://github.com/kk-github2/kk-petcircle-Task-2.git
 2. Click on Code dropdown and download my entire test collection > save on your local folder
+3. The folder will be downloaded as a zip file. Extract the folder from this and save it
 
 **Set Up Postman (on your local)**
 1. Install Postman and double click to open
