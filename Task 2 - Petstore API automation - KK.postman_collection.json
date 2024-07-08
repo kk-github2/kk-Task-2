@@ -418,6 +418,221 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Delete a pet - existing pets",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: 'https://petstore.swagger.io/v2/pet',\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json'\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: {\r",
+							"                 \"id\": 1504,\r",
+							"            \"category\": {\r",
+							"                \"id\": 15041,\r",
+							"                \"name\": \"Cavoodle\"\r",
+							"            },\r",
+							"            \"name\": \"Cavoodle-mocha\",\r",
+							"            \"photoUrls\": [\r",
+							"                \"sample image\"\r",
+							"            ],\r",
+							"            \"tags\": [\r",
+							"                {\r",
+							"                    \"id\": 15041,\r",
+							"                    \"name\": \"CavMoc\"\r",
+							"                }\r",
+							"            ],\r",
+							"            \"status\": \"available\"\r",
+							"             }\r",
+							"    }\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.error(err);\r",
+							"    } else {\r",
+							"        /*\r",
+							"        console.log('Pet created successfully with the below details:');\r",
+							"        console.log('ID=',res.json().id);\r",
+							"        console.log('Category ID=',res.json().category.id);\r",
+							"        console.log('Category name= :', res.json().category.name);\r",
+							"        console.log('Name=', res.json().name);\r",
+							"        console.log('photoUrl=', res.json().photoUrls);\r",
+							"         res.json().tags.forEach(tag => {\r",
+							"            console.log('Tag ID=', tag.id);\r",
+							"            console.log('Tag Name=', tag.name);\r",
+							"        });\r",
+							"        console.log('status', res.json().status);\r",
+							"               */\r",
+							"      pm.environment.set(\"createdPetId\", res.json().id);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Delete request was successful\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"deletedPetId\", pm.response.json().message);\r",
+							"const deletedPetId = pm.environment.get(\"deletedPetId\");\r",
+							"\r",
+							"// GET request to fetch the updated pet details\r",
+							"pm.sendRequest({\r",
+							"    url: `https://petstore.swagger.io/v2/pet/${deletedPetId}`,\r",
+							"    method: 'GET',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json'\r",
+							"    }\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.error(err);\r",
+							"    } else {\r",
+							"      const jsonData = res.json();\r",
+							"            pm.test(\"Verify that GET pet details post a DELETE throws Pet not found\", function () {\r",
+							"               \r",
+							"                pm.expect(jsonData.code).to.eql(1);\r",
+							"                pm.expect(jsonData.message).to.eql(\"Pet not found\");\r",
+							"    })\r",
+							"}\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/{{createdPetId}}",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"{{createdPetId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Pet - non existing pets",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify that trying to DELETE a non-existing pet throws 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "authorizationToken",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "special-key",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json'",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "api_key",
+						"value": "special-key",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/546",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"546"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
