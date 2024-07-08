@@ -1,0 +1,101 @@
+{
+	"info": {
+		"_postman_id": "85a8813d-c40f-4e86-8230-6f5c227535f3",
+		"name": "Task 2 - Petstore API automation - KK",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36733497"
+	},
+	"item": [
+		{
+			"name": "Create a Pet(Happy path)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseData = pm.response.json();\r",
+							"var requestBody = JSON.parse(request.data); \r",
+							"\r",
+							"//Verify that create request executed successfully\r",
+							"pm.test(\"Verify that Pet was created successfully\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//Verify structure of response including all sub-field structures \r",
+							"pm.test(\"Check Response structure is valid and includes all mandatory fields\", function () {\r",
+							"    pm.expect(responseData).to.have.property(\"id\");\r",
+							"    pm.expect(responseData).to.have.property(\"category\");\r",
+							"    pm.expect(responseData.category).to.have.property(\"id\");\r",
+							"    pm.expect(responseData.category).to.have.property(\"name\");\r",
+							"    pm.expect(responseData).to.have.property(\"name\");\r",
+							"    pm.expect(responseData).to.have.property(\"photoUrls\");\r",
+							"    pm.expect(responseData).to.have.property(\"tags\");\r",
+							"    for(var i=0; i < responseData.tags.length; i++){\r",
+							"        pm.expect(responseData.tags[i]).to.have.property(\"id\");\r",
+							"    }\r",
+							"    for(var i=0; i < responseData.tags.length; i++){\r",
+							"        pm.expect(responseData.tags[i]).to.have.property(\"name\");\r",
+							"    }\r",
+							"    pm.expect(responseData).to.have.property(\"status\");\r",
+							"});\r",
+							"\r",
+							"// Verify values of response\r",
+							"pm.test(\"check response values\",function(){\r",
+							"    \r",
+							"    pm.expect(responseData).to.eql(requestBody);\r",
+							"});\r",
+							"/*\r",
+							"pm.test(\"Extract and store created pet ID\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.environment.set(\"createdPetId\", jsonData.id);\r",
+							"    console.log(jsonData.id);\r",
+							"});\r",
+							"*/\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1504,\r\n  \"category\": {\r\n    \"id\": 15041,\r\n    \"name\": \"Cavoodle\"\r\n  },\r\n  \"name\": \"Cavoodle-mocha\",\r\n  \"photoUrls\": [\r\n    \"sample image\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 15041,\r\n      \"name\": \"CavMoc\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
