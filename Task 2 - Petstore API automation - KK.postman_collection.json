@@ -277,6 +277,147 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Update Pet details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"const requestBody = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"pm.test(\"Update request was successful\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"updatedPetId\", pm.response.json().id);\r",
+							"const updatedPetId = pm.environment.get(\"updatedPetId\");\r",
+							"\r",
+							"// GET request to fetch the updated pet details\r",
+							"pm.sendRequest({\r",
+							"    url: `https://petstore.swagger.io/v2/pet/${updatedPetId}`,\r",
+							"    method: 'GET',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json'\r",
+							"    }\r",
+							"}, function (err, response) {\r",
+							"    // Check if the GET request was successful\r",
+							"    pm.test(\"GET request was successful and should now get the updated pet details\", function () {\r",
+							"        pm.response.to.have.status(200);\r",
+							"    });\r",
+							"\r",
+							"    // Validate the returned data matches the updated details\r",
+							"    pm.test(\"Verify that the updated pet details matches the updated request(PUT) \", function () {\r",
+							"        const responseBody = pm.response.json();\r",
+							"      \r",
+							"       \r",
+							"        pm.expect(responseBody).to.eql(requestBody)\r",
+							"        \r",
+							"        console.log('Pet details are now successfully updated. New details below:');\r",
+							"        console.log('ID=',responseBody.id);\r",
+							"        console.log('Category ID=',responseBody.category.id);\r",
+							"        console.log('Category name= :',responseBody.category.name);\r",
+							"        console.log('Name=', responseBody.name);\r",
+							"        console.log('photoUrl=', responseBody.photoUrls);\r",
+							"         responseBody.tags.forEach(tag => {\r",
+							"            console.log('Tag ID=', tag.id);\r",
+							"            console.log('Tag Name=', tag.name);\r",
+							"        });\r",
+							"        console.log('status', responseBody.status);\r",
+							"\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: 'https://petstore.swagger.io/v2/pet',\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json'\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: {\r",
+							"                 \"id\": 1504,\r",
+							"            \"category\": {\r",
+							"                \"id\": 15041,\r",
+							"                \"name\": \"Cavoodle\"\r",
+							"            },\r",
+							"            \"name\": \"Cavoodle-mocha\",\r",
+							"            \"photoUrls\": [\r",
+							"                \"sample image\"\r",
+							"            ],\r",
+							"            \"tags\": [\r",
+							"                {\r",
+							"                    \"id\": 15041,\r",
+							"                    \"name\": \"CavMoc\"\r",
+							"                }\r",
+							"            ],\r",
+							"            \"status\": \"available\"\r",
+							"             }\r",
+							"    }\r",
+							"}, function (err, res) {\r",
+							"    if (err) {\r",
+							"        console.error(err);\r",
+							"    } else {\r",
+							"        console.log('Pet created successfully with the below details:');\r",
+							"        console.log('ID=',res.json().id);\r",
+							"        console.log('Category ID=',res.json().category.id);\r",
+							"        console.log('Category name= :', res.json().category.name);\r",
+							"        console.log('Name=', res.json().name);\r",
+							"        console.log('photoUrl=', res.json().photoUrls);\r",
+							"         res.json().tags.forEach(tag => {\r",
+							"            console.log('Tag ID=', tag.id);\r",
+							"            console.log('Tag Name=', tag.name);\r",
+							"        });\r",
+							"        console.log('status', res.json().status);\r",
+							"               \r",
+							"     // pm.environment.set(\"createdPetId\", res.json().id);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1504,\r\n  \"category\": {\r\n    \"id\": 15042,\r\n    \"name\": \"Cavoodle-updated\"\r\n  },\r\n  \"name\": \"Cavoodle-Latte\",\r\n  \"photoUrls\": [\r\n    \"sample image 2\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 15042,\r\n      \"name\": \"CavMoc-updated\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
