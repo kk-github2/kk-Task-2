@@ -54,13 +54,7 @@
 							"    \r",
 							"    pm.expect(responseData).to.eql(requestBody);\r",
 							"});\r",
-							"/*\r",
-							"pm.test(\"Extract and store created pet ID\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.environment.set(\"createdPetId\", jsonData.id);\r",
-							"    console.log(jsonData.id);\r",
-							"});\r",
-							"*/\r",
+							"\r",
 							"\r",
 							""
 						],
@@ -75,6 +69,115 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n  \"id\": 1504,\r\n  \"category\": {\r\n    \"id\": 15041,\r\n    \"name\": \"Cavoodle\"\r\n  },\r\n  \"name\": \"Cavoodle-mocha\",\r\n  \"photoUrls\": [\r\n    \"sample image\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 15041,\r\n      \"name\": \"CavMoc\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a Pet - 500 Error",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Verify that Pet creation fails with 500 server error if junk characters were used\", function () {\r",
+							"    pm.response.to.have.status(500);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1504,\r\n  \"category\": {\r\n    \"id\": ##%^#6,\r\n    \"name\": \"Cavoodle\"\r\n  },\r\n  \"name\": \"Cavoodle-mocha\",\r\n  \"photoUrls\": [\r\n    \"sample image\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 15041,\r\n      \"name\": \"CavMoc\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a Pet - 400 Error",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify that Creation of Pet fails with 400 if a mandatory field is missing\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1504,\r\n    \"category\": {\r\n        \"id\": 15041,\r\n        \"name\": \"Cavoodle\"\r\n    },\r\n    \"name\": ,\r\n    \"photoUrls\": [\r\n        \"sample image\"\r\n    ],\r\n    \"tags\": [\r\n        {\r\n            \"id\": 15041,\r\n            \"name\": \"CavMoc\"\r\n        }\r\n    ],\r\n    \"status\": \"available\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
